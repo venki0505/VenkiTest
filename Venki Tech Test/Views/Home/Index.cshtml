@@ -1,0 +1,97 @@
+﻿
+@model Venki_Tech_Test.ViewModels.StationsVM
+
+@{
+    ViewBag.Title = "Test Landing Page";
+}
+
+
+<div id="mainDiv">
+
+    <h3>Question 1 </h3><br />
+    <button id="btnPrgms">Display all available Programs </button>
+    <span id="spnResult"></span>
+    <br /><br />
+
+    <h3>Question 2 </h3><br />
+    <label>Select/Change Station To Show programs:</label>
+    @Html.DropDownListFor(m => Model.allStations.FirstOrDefault().STATION_NAME,
+            new SelectList(Model.allStations.Select(x => new SelectListItem
+            {
+               Value = x.STATION_ID.ToString(),
+               Text = x.STATION_NAME.ToString()
+            }), "Value", "Text", Model.allStations.FirstOrDefault().STATION_NAME),
+            new { @type = "selectlist", @id = "ddlStation", @name = "", @class = "" })
+
+    <div id="spnResult2"></div>
+
+    <h3>Question 3 </h3><br />
+    <b>Step 1.</b> Entery the number of new rows to be added to MArket_Pop Table: <input id="txtNbrofRows" type="text" name="fname"><br>
+    <b> Step 2.</b> Click the button to Update DB<button id="btnAddMarketPop">Add MarketPop Rows </button>
+    <br /><br />
+    <span id="spnResult3" style="color:green; font-weight: bold;"></span>
+    <br /><br />
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+   
+        //Question 1
+        $(function () {
+            $("#btnPrgms").click(function (){
+                 $.ajax({
+                    url: '@Url.Action("ProcessProgramName", "Home")',
+                    type: "GET",
+                    dataType: "html",
+                    cache: false,
+                    data: {},
+                    success: function (data) { $("#spnResult").html(data);}
+                });
+            })
+        });
+        //Question 2
+        $("#ddlStation").change(function () {
+                $.ajax({
+                    url: '@Url.Action("GetProgramNamesByStation", "Home")',
+                    type: "GET",
+                    dataType: "html",                    
+                    cache: false,
+                    data: { stationNbr: $('#ddlStation').val()},
+                    success: function (data) {
+                        $('#spnResult2').html(''); 
+                        $('#spnResult2').html(data);
+                    }
+                });
+        });
+
+        //Question 3 
+        $("#btnAddMarketPop").click(function () {
+
+            var nbrOfNewRows = $("#txtNbrofRows").val()
+
+            if (nbrOfNewRows != "") {
+                $.ajax({
+                    url: '@Url.Action("PopulateMarketPop", "Home")',
+                    type: "GET",
+                    dataType: "html",
+                    cache: false,
+                    data: { insertRowCOunt: nbrOfNewRows },
+                    success: function (data) {
+                         // alert(data);
+                        if (data) {
+                            $('#spnResult3').html("Inserted new rows, add more");
+                            $("#txtNbrofRows").val("");
+                        }
+                    }
+                });
+            }
+            else {
+                alert("Please enter # of rows to be created in Step 1");
+            }
+        });
+    });
+
+
+</script>

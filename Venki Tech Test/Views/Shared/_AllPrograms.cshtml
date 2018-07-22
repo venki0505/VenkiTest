@@ -1,0 +1,41 @@
+﻿
+@model Venki_Tech_Test.ViewModels.StationsVM
+
+@{
+    ViewBag.Title = "_Programs";
+}
+
+
+    @if (Model.allPrograms.Count > 0)
+    {
+        <br />
+        <span>
+            <b>Note: </b> Flight Date Formated as suggested in the instructions
+        </span>
+        <br />
+        <table border="1" cellspacing="1">
+            <thead>
+                <th width="250px">Program Name</th>
+                <th with="100px">Flight Date</th>
+            </thead>
+            @foreach (var obj in Model.allPrograms)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(m => obj.PROGRAM_NAME)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => obj.FLIGHT_DATE)
+                    </td>
+                </tr>
+            }
+            <tr></tr>
+        </table>
+    }
+    else
+    {
+        <span style="color:red">
+            Sorry, No Programs for the selected Station, Please select a different station
+        </span>
+    }
+
